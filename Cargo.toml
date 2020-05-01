@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "imgui-inspect",
-    "imgui-inspect-derive",
-    "imgui-inspect-demo"
+    "imgui_inspect",
+    "imgui_inspect_derive",
+    "imgui_inspect_demo"
 ]
