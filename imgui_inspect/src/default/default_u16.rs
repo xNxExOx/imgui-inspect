@@ -1,8 +1,8 @@
 use super::*;
 
-impl InspectRenderDefault<String> for String {
+impl InspectRenderDefault<u16> for u16 {
     fn render(
-        data: &[&String],
+        data: &[&u16],
         label: &'static str,
         ui: &imgui::Ui,
         _args: &InspectArgsDefault,
@@ -31,12 +31,20 @@ impl InspectRenderDefault<String> for String {
     }
 
     fn render_mut(
-        data: &mut [&mut String],
+        data: &mut [&mut u16],
         label: &'static str,
         ui: &imgui::Ui,
         _args: &InspectArgsDefault,
     ) -> bool {
         let same_or_none_value = get_same_or_none_mut(data);
+
+        let value = match same_or_none_value {
+            Some(v) => v,
+            None => 0, // Some reasonable default
+        };
+
+        // CAST
+        let mut value = value as i32;
 
         let style_token = if same_or_none_value.is_none() {
             // If values are inconsistent, push a style
@@ -45,20 +53,16 @@ impl InspectRenderDefault<String> for String {
             None
         };
 
-        let value = match same_or_none_value {
-            Some(v) => v,
-            None => "".to_string(), // Some reasonable default
-        };
-
         let mut changed = false;
-        let mut value = imgui::im_str!("{}", value);
         if ui
-            .input_text_multiline(&imgui::im_str!("{}", label), &mut value, [100.0, 30.0])
-            .resize_buffer(true)
+            .input_int(&imgui::im_str!("{}", label), &mut value)
             .build()
         {
             for d in data {
-                **d = value.to_string();
+                // CAST
+                let value = value as u16;
+
+                **d = value;
                 changed = true;
             }
         }
